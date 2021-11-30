@@ -46,7 +46,16 @@ function copyPrDescription() {
   const commitTitle = `${prTitleEl.value} (#${prNumberMatch.groups['pr_number']})`;
 
   // Remove leading HTML comments
-  let commitBody = prBodyEl.textContent.replace(/^<!--.*?-->\n*/gs, '');
+  let commitBody = prBodyEl.textContent.replace(/<!--.*?-->\n*/gs, '');
+
+  // Remove leading template section if found.
+  let arr = commitBody.split("## Why are these changes needed?");
+  if (arr.length > 1) {
+    commitBody = arr[1];
+  }
+
+  // Remove trailing template sections.
+  commitBody = commitBody.split("## Related issue number")[0].trim();
 
   // Preserve and de-duplicate co-authors
   const coauthors = new Set(messageFields[0].value.match(/Co-authored-by: .*/g));
